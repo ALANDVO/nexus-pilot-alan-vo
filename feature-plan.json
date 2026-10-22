@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "current_feature": "core-skeleton",
+  "features": [
+    {
+      "id": "core-skeleton",
+      "title": "FastAPI/React skeleton with OIDC auth and CAD geometry service",
+      "status": "in_progress",
+      "acceptance": [
+        "FastAPI app starts and serves health endpoint",
+        "React frontend builds and loads",
+        "OIDC Keycloak authentication flow works (login/callback/logout)",
+        "SQLite persistence with models for CAD parts and unfold operations",
+        "Docker compose with backend, frontend, Keycloak, and volumes",
+        "Backend and frontend tests pass"
+      ],
+      "implementation": [
+        "backend/app/main.py",
+        "backend/app/api/routes.py",
+        "backend/app/models/__init__.py",
+        "backend/app/services/cad_service.py",
+        "backend/app/core/config.py",
+        "backend/app/core/auth.py",
+        "frontend/src/main.tsx",
+        "frontend/src/App.tsx",
+        "frontend/src/api/client.ts",
+        "frontend/src/components/Login.tsx",
+        "frontend/src/components/Dashboard.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_auth.py",
+        "backend/tests/test_cad_service.py",
+        "backend/tests/test_routes.py",
+        "frontend/src/__tests__/App.test.tsx",
+        "frontend/src/__tests__/client.test.ts"
+      ]
+    },
+    {
+      "id": "sheet-metal-unfold",
+      "title": "Sheet-metal unfolding engine (cadgen.unfold)",
+      "status": "planned",
+      "acceptance": [
+        "Thickness detection from parallel planar face pairs",
+        "Bend detection from coaxial cylindrical faces",
+        "Flange tree construction and layout into XY plane",
+        "Bend allowance calculation (K-factor and bend table)",
+        "Unfolded output with profile, bend lines, and bend records",
+        "Refusal for hems, curls, conical bends, variable thickness, collisions"
+      ],
+      "implementation": [
+        "backend/app/services/unfold.py",
+        "backend/app/models/unfold.py"
+      ],
+      "tests": [
+        "backend/tests/test_unfold.py"
+      ]
+    },
+    {
+      "id": "viewport-selection",
+      "title": "Viewport region selection for agent context",
+      "status": "planned",
+      "acceptance": [
+        "Selection box overlay on 3D viewport",
+        "Face/edge picking capability",
+        "Selected geometry exported as agent context",
+        "Token usage reduction measurable"
+      ],
+      "implementation": [
+        "frontend/src/components/ViewportSelector.tsx",
+        "frontend/src/hooks/useViewportSelection.ts"
+      ],
+      "tests": [
+        "frontend/src/__tests__/ViewportSelector.test.tsx"
+      ]
+    },
+    {
+      "id": "large-model-handling",
+      "title": "Large STEP model loading with streaming/memory management",
+      "status": "planned",
+      "acceptance": [
+        "Progressive loading for large STEP files",
+        "Memory envelope enforcement with graceful degradation",
+        "Component-level loading control"
+      ],
+      "implementation": [
+        "backend/app/services/step_loader.py",
+        "frontend/src/components/ModelLoader.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_step_loader.py"
+      ]
+    }
+  ]
+}

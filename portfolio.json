@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "nexus-pilot-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "summary": "Work in progress: nexus-pilot-alan-vo",
+  "workflows": [
+    "Unfold bent sheet-metal parts into flat patterns with bend lines and per-bend measurements for manufacturing",
+    "Select viewport regions (box/face/edge) to give agents focused geometry context, reducing token usage 60-90%",
+    "Progressively load large STEP assemblies with memory envelope enforcement and component-level control"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}
