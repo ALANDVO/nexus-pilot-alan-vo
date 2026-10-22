@@ -1,0 +1,19 @@
+# Backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.env
+*.db
+*.sqlite
+*.sqlite3
+data/
+.venv/
+dist/
+build/
+*.egg-info/
