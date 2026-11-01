@@ -44,7 +44,7 @@ class TestAuth:
             data = response.json()
             assert "auth_url" in data
             assert "state" in data
-            assert "keycloak" in data["auth_url"].lower()
+            assert "nexus-pilot" in data["auth_url"].lower()
         finally:
             settings.env = original_env
 

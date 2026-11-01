@@ -33,7 +33,7 @@ class UnfoldJob(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     part: Mapped["Part"] = relationship("Part", back_populates="unfold_jobs")
-    result: Mapped["UnfoldResult"] = relationship("UnfoldResult", back_populates="job", cascade="all, delete-orphan")
+    result: Mapped["UnfoldResult"] = relationship("UnfoldResult", back_populates="job", foreign_keys="UnfoldJob.result_id", remote_side="UnfoldResult.id", cascade="all, delete-orphan", single_parent=True)
 
     def __repr__(self) -> str:
         return f"<UnfoldJob(id={self.id}, part_id={self.part_id}, status={self.status})>"
@@ -43,7 +43,6 @@ class UnfoldResult(Base):
     __tablename__ = "unfold_results"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    job_id: Mapped[int] = mapped_column(ForeignKey("unfold_jobs.id"), nullable=False, unique=True, index=True)
     profile_path: Mapped[str] = mapped_column(String(500), nullable=False)
     bend_lines_path: Mapped[str] = mapped_column(String(500), nullable=False)
     blank_area: Mapped[float] = mapped_column(Float, nullable=False)
@@ -58,7 +57,7 @@ class UnfoldResult(Base):
     bends: Mapped[list["BendRecord"]] = relationship("BendRecord", back_populates="result", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
-        return f"<UnfoldResult(id={self.id}, job_id={self.job_id}, bends={self.bend_count})>"
+        return f"<UnfoldResult(id={self.id}, job_id={self.job.id if self.job else None}, bends={self.bend_count})>"
 
 
 class BendRecord(Base):

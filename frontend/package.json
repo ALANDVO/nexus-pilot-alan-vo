@@ -2,7 +2,11 @@
   "name": "nexus-pilot-frontend",
   "version": "1.0.0",
   "description": "Nexus Pilot - Give your agent CAD superpowers",
-  "author": "Alan Vo <alanvo@gmail.com>",
+  "author": {
+    "name": "Alan Vo",
+    "email": "alanvo@gmail.com",
+    "url": "https://github.com/ALANDVO"
+  },
   "private": true,
   "type": "module",
   "scripts": {

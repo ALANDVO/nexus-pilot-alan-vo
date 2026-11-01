@@ -58,7 +58,6 @@ class TestModels:
     def test_unfold_result_model_creation(self):
         from app.models.unfold import UnfoldResult
         result = UnfoldResult(
-            job_id=1,
             profile_path="/tmp/profile.dxf",
             bend_lines_path="/tmp/bendlines.dxf",
             blank_area=5000.0,
@@ -67,6 +66,7 @@ class TestModels:
         )
         assert result.blank_area == 5000.0
         assert result.bend_count == 2
+
 
     def test_bend_record_model_creation(self):
         from app.models.unfold import BendRecord
