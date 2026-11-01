@@ -10,6 +10,7 @@ class CadService:
     def __init__(self, upload_dir: str = "./data/uploads", max_size_mb: int = 500):
         self.upload_dir = Path(upload_dir)
         self.upload_dir.mkdir(parents=True, exist_ok=True)
+        self.max_size_mb = max_size_mb
         self.max_size_bytes = max_size_mb * 1024 * 1024
 
     def save_upload(self, file: BinaryIO, filename: str) -> tuple[str, int]:

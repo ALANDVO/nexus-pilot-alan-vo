@@ -57,7 +57,7 @@ interface AuthState {
   accessToken: string | null
   isAuthenticated: boolean
   login: (user: User, token: string) => void
-  logout: () void
+  logout: () => void
 }
 
 export const useAuthStore = create<AuthState>()(

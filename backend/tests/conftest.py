@@ -20,14 +20,20 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 @pytest.fixture(scope="session")
 def test_settings():
     return Settings(
-        ENV="testing",
-        SECRET_KEY="test-secret",
-        DATABASE_URL=TEST_DATABASE_URL,
-        KEYCLOAK_URL="http://localhost:8080",
-        KEYCLOAK_REALM="test",
-        KEYCLOAK_CLIENT_ID="test-client",
-        KEYCLOAK_CLIENT_SECRET="test-secret",
-        FRONTEND_URL="http://localhost:5173"
+        env="testing",
+        secret_key="test-secret",
+        api_host="127.0.1",
+        api_port=8000,
+        frontend_url="http://127.0.0.1:5173",
+        database_url=TEST_DATABASE_URL,
+        keycloak_url="http://127.0.0.1:8080",
+        keycloak_realm="nexus-pilot",
+        keycloak_client_id="nexus-pilot-client",
+        keycloak_client_secret="test-secret",
+        keycloak_admin_user="admin",
+        keycloak_admin_password="admin",
+        max_step_size_mb=500,
+        memory_envelope_mb=1024,
     )
 
 
@@ -35,14 +41,14 @@ def test_settings():
 async def db_engine():
     engine = create_async_engine(
         TEST_DATABASE_URL,
-        connect_args={"check_same_thread": False},
+        echo=False,
+        future=True,
         poolclass=StaticPool,
+        connect_args={"check_same_thread": False},
     )
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield engine
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
     await engine.dispose()
 
 
@@ -59,10 +65,9 @@ async def client(db_session):
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
-
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
-
     app.dependency_overrides.clear()
 
 
@@ -72,7 +77,7 @@ async def test_user(db_session):
         keycloak_sub="test-sub-123",
         email="test@example.com",
         username="testuser",
-        roles=["viewer", "operator"]
+        roles=["operator", "viewer"],
     )
     db_session.add(user)
     await db_session.commit()
@@ -84,13 +89,12 @@ async def test_user(db_session):
 async def test_part(db_session, test_user):
     part = Part(
         owner_id=test_user.id,
-        filename="test.step",
-        original_filename="test.step",
+        filename="test_part.step",
+        original_filename="test_part.step",
         content_type="application/step",
         file_size=1024,
-        file_path="/tmp/test.step",
+        file_path="/tmp/test_part.step",
         status=PartStatus.READY,
-        metadata_={"volume": 1000.0, "face_count": 10}
     )
     db_session.add(part)
     await db_session.commit()
@@ -106,9 +110,6 @@ def mock_token_validator(monkeypatch):
             "sub": "test-sub-123",
             "email": "test@example.com",
             "preferred_username": "testuser",
-            "realm_access": {"roles": ["viewer", "operator"]},
-            "aud": "test-client",
-            "iss": "http://localhost:8080/realms/test"
+            "realm_access": {"roles": ["operator", "viewer"]},
         }
-
     monkeypatch.setattr(token_validator, "validate_token", mock_validate)

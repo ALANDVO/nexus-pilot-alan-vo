@@ -10,7 +10,7 @@ from app.models.unfold import UnfoldJob, UnfoldResult, BendRecord, UnfoldJobStat
 
 class TestPartsAPI:
     @pytest.mark.asyncio
-    async def test_upload_part_requires_operator_role(self, client: AsyncClient, mock_token_validator):
+    async def test_upload_part_requires_operator_role(self, client: AsyncClient, monkeypatch):
         from app.core.auth import token_validator
         async def mock_validate(token):
             return {
@@ -21,21 +21,21 @@ class TestPartsAPI:
                 "aud": "test-client",
                 "iss": "http://localhost:8080/realms/test"
             }
-        token_validator.validate_token = mock_validate
+        monkeypatch.setattr(token_validator, "validate_token", mock_validate)
 
         files = {"file": ("test.step", b"STEP content", "application/step")}
-        response = await client.post("/api/parts", files=files)
+        response = await client.post("/api/parts", files=files, headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 403
 
     @pytest.mark.asyncio
     async def test_upload_part_rejects_invalid_extension(self, client: AsyncClient, mock_token_validator):
         files = {"file": ("test.txt", b"text content", "text/plain")}
-        response = await client.post("/api/parts", files=files)
+        response = await client.post("/api/parts", files=files, headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 400
         assert "STEP files" in response.json()["detail"]
 
     @pytest.mark.asyncio
-    async def test_list_parts_requires_viewer_role(self, client: AsyncClient, mock_token_validator):
+    async def test_list_parts_requires_viewer_role(self, client: AsyncClient, monkeypatch):
         from app.core.auth import token_validator
         async def mock_validate(token):
             return {
@@ -46,9 +46,9 @@ class TestPartsAPI:
                 "aud": "test-client",
                 "iss": "http://localhost:8080/realms/test"
             }
-        token_validator.validate_token = mock_validate
+        monkeypatch.setattr(token_validator, "validate_token", mock_validate)
 
-        response = await client.get("/api/parts")
+        response = await client.get("/api/parts", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 403
 
     @pytest.mark.asyncio
@@ -69,7 +69,7 @@ class TestPartsAPI:
             db_session.add(part)
         await db_session.commit()
 
-        response = await client.get("/api/parts?limit=3")
+        response = await client.get("/api/parts?limit=3", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 200
         data = response.json()
         assert len(data["parts"]) == 3
@@ -103,14 +103,14 @@ class TestPartsAPI:
         await db_session.commit()
         await db_session.refresh(part)
 
-        response = await client.get(f"/api/parts/{part.id}")
+        response = await client.get(f"/api/parts/{part.id}", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 404
 
     @pytest.mark.asyncio
     async def test_delete_part_removes_record(
         self, client: AsyncClient, mock_token_validator, db_session: AsyncSession, test_user: User, test_part: Part
     ):
-        response = await client.delete(f"/api/parts/{test_part.id}")
+        response = await client.delete(f"/api/parts/{test_part.id}", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 204
 
         result = await db_session.execute(select(Part).where(Part.id == test_part.id))
@@ -137,7 +137,8 @@ class TestUnfoldAPI:
 
         response = await client.post(
             f"/api/parts/{part.id}/unfold",
-            json={"k_factor": 0.33, "kerf": 0.1}
+            json={"k_factor": 0.33, "kerf": 0.1},
+            headers={"Authorization": "Bearer test-token"}
         )
         assert response.status_code == 400
         assert "not ready" in response.json()["detail"].lower()
@@ -148,13 +149,15 @@ class TestUnfoldAPI:
     ):
         response = await client.post(
             f"/api/parts/{test_part.id}/unfold",
-            json={"k_factor": 1.5, "kerf": 0.1}
+            json={"k_factor": 1.5, "kerf": 0.1},
+            headers={"Authorization": "Bearer test-token"}
         )
         assert response.status_code == 422
 
         response = await client.post(
             f"/api/parts/{test_part.id}/unfold",
-            json={"k_factor": -0.1, "kerf": 0.1}
+            json={"k_factor": -0.1, "kerf": 0.1},
+            headers={"Authorization": "Bearer test-token"}
         )
         assert response.status_code == 422
 
@@ -172,7 +175,7 @@ class TestUnfoldAPI:
         await db_session.commit()
         await db_session.refresh(job)
 
-        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}")
+        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 200
         data = response.json()
         assert data["job_id"] == job.id
@@ -193,7 +196,6 @@ class TestUnfoldAPI:
         await db_session.refresh(job)
 
         result = UnfoldResult(
-            job_id=job.id,
             profile_path="/tmp/profile.dxf",
             bend_lines_path="/tmp/bendlines.dxf",
             blank_area=5000.0,
@@ -202,6 +204,10 @@ class TestUnfoldAPI:
             metadata_={}
         )
         db_session.add(result)
+        await db_session.flush()
+
+        # Link job to result
+        job.result_id = result.id
         await db_session.flush()
 
         bend1 = BendRecord(
@@ -220,8 +226,9 @@ class TestUnfoldAPI:
         )
         db_session.add(bend1)
         await db_session.commit()
+        await db_session.refresh(job)
 
-        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}")
+        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 200
         data = response.json()
         assert "result" in data
@@ -243,5 +250,5 @@ class TestUnfoldAPI:
         await db_session.commit()
         await db_session.refresh(job)
 
-        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}/profile")
+        response = await client.get(f"/api/parts/{test_part.id}/unfold/{job.id}/profile", headers={"Authorization": "Bearer test-token"})
         assert response.status_code == 404

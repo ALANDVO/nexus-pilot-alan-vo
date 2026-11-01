@@ -46,3 +46,10 @@ yarn-error.log*
 
 # Docker
 .docker/
+venv/
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
