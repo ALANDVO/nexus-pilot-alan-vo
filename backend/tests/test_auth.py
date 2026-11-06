@@ -47,6 +47,24 @@ class TestAuth:
             assert "nexus-pilot" in data["auth_url"].lower()
         finally:
             settings.env = original_env
+    @pytest.mark.asyncio
+    async def test_login_works_without_client_secret_in_dev(self, client: AsyncClient):
+        from app.core.config import get_settings
+        settings = get_settings()
+        original_env = settings.env
+        original_secret = settings.keycloak_client_secret
+        settings.env = "development"
+        settings.keycloak_client_secret = ""
+        try:
+            response = await client.get("/auth/login")
+            assert response.status_code == 200
+            data = response.json()
+            assert "auth_url" in data
+            assert "state" in data
+            assert "nexus-pilot" in data["auth_url"].lower()
+        finally:
+            settings.env = original_env
+            settings.keycloak_client_secret = original_secret
 
     @pytest.mark.asyncio
     async def test_callback_missing_code_returns_400(self, client: AsyncClient):
