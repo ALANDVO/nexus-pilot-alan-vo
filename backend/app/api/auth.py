@@ -105,7 +105,7 @@ async def callback(
                 "code": code,
                 "redirect_uri": pkce_data["redirect_uri"],
                 "client_id": settings.keycloak_client_id,
-                "client_secret": settings.keycloak_client_secret,
+                **({"client_secret": settings.keycloak_client_secret} if settings.keycloak_client_secret else {}),
                 "code_verifier": pkce_data["code_verifier"]
             },
             headers={"Content-Type": "application/x-www-form-urlencoded"}
