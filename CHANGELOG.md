@@ -32,3 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI workflow (GitHub Actions): backend pytest, frontend build/test, Docker builds
 - Portfolio metadata (portfolio.json) with workflows and provider support
 - Documentation: README with AI/ML evaluation, architecture, API reference, SSO/SAML setup
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

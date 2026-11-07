@@ -158,3 +158,7 @@ MIT © Alan Vo <alanvo@gmail.com>
 
 ## Author
 Alan Vo — alanvo@gmail.com — GitHub: ALANDVO
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
