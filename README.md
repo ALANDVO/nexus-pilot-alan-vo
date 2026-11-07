@@ -161,4 +161,4 @@ Alan Vo — alanvo@gmail.com — GitHub: ALANDVO
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)
