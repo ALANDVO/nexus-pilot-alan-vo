@@ -10,7 +10,7 @@ core-skeleton
 
 ### core-skeleton — FastAPI/React skeleton with OIDC auth and CAD geometry service
 
-Status: in_progress
+Status: done
 
 Acceptance:
 - FastAPI app starts and serves health endpoint
@@ -22,7 +22,7 @@ Acceptance:
 
 Implementation: `backend/app/main.py`, `backend/app/api/routes.py`, `backend/app/models/__init__.py`, `backend/app/services/cad_service.py`, `backend/app/core/config.py`, `backend/app/core/auth.py`, `frontend/src/main.tsx`, `frontend/src/App.tsx`, `frontend/src/api/client.ts`, `frontend/src/components/Login.tsx`, `frontend/src/components/Dashboard.tsx`
 
-Tests: `backend/tests/test_auth.py`, `backend/tests/test_cad_service.py`, `backend/tests/test_routes.py`, `frontend/src/__tests__/App.test.tsx`, `frontend/src/__tests__/client.test.ts`
+Tests: `backend/tests/test_auth.py`, `backend/tests/test_cad_service.py`, `backend/tests/test_routes.py`, `backend/tests/test_models.py`, `backend/tests/test_unfold.py`, `frontend/src/__tests__/App.test.tsx`, `frontend/src/__tests__/client.test.ts`, `frontend/src/__tests__/ViewportSelector.test.tsx`
 
 ### sheet-metal-unfold — Sheet-metal unfolding engine (cadgen.unfold)
 

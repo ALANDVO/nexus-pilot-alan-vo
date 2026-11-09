@@ -1,3 +1,4 @@
+
 {
   "schema_version": 1,
   "current_feature": "core-skeleton",
@@ -5,7 +6,7 @@
     {
       "id": "core-skeleton",
       "title": "FastAPI/React skeleton with OIDC auth and CAD geometry service",
-      "status": "in_progress",
+      "status": "done",
       "acceptance": [
         "FastAPI app starts and serves health endpoint",
         "React frontend builds and loads",
@@ -31,8 +32,11 @@
         "backend/tests/test_auth.py",
         "backend/tests/test_cad_service.py",
         "backend/tests/test_routes.py",
+        "backend/tests/test_models.py",
+        "backend/tests/test_unfold.py",
         "frontend/src/__tests__/App.test.tsx",
-        "frontend/src/__tests__/client.test.ts"
+        "frontend/src/__tests__/client.test.ts",
+        "frontend/src/__tests__/ViewportSelector.test.tsx"
       ]
     },
     {
