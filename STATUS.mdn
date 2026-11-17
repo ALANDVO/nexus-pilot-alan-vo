@@ -1,0 +1,9 @@
+
+## Current work (sheet-metal-unfold)
+
+- Implemented thickness detection (parallel planar face voting) in `cad_service.py`
+- Implemented basic bend detection for coaxial cylindrical faces
+- Created UnfoldService with stub unfolding algorithm and DXF output generation
+- Unit tests for bend allowance calculations (`test_bend_allowance_calculation_k_factor`) pass, but integration tests (`test_unfold_part_updates_job_status`) fail due to pytest-asyncio async fixture errors in test infrastructure
+- Remaining acceptance items (flange tree, bend table, full unfolding, refusal logic) are in_progress
+

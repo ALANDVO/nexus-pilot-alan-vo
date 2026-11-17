@@ -37,7 +37,7 @@ def test_settings():
     )
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def db_engine():
     engine = create_async_engine(
         TEST_DATABASE_URL,
@@ -52,14 +52,14 @@ async def db_engine():
     await engine.dispose()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def db_session(db_engine):
     async_session = async_sessionmaker(db_engine, class_=AsyncSession, expire_on_commit=False)
     async with async_session() as session:
         yield session
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def client(db_session):
     def override_get_db():
         yield db_session
@@ -71,7 +71,7 @@ async def client(db_session):
     app.dependency_overrides.clear()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def test_user(db_session):
     user = User(
         keycloak_sub="test-sub-123",
@@ -85,7 +85,7 @@ async def test_user(db_session):
     return user
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest.fixture(scope="function")
 async def test_part(db_session, test_user):
     part = Part(
         owner_id=test_user.id,
