@@ -1,7 +1,7 @@
 
 {
   "schema_version": 1,
-  "current_feature": "core-skeleton",
+  "current_feature": "sheet-metal-unfold",
   "features": [
     {
       "id": "core-skeleton",
@@ -42,7 +42,7 @@
     {
       "id": "sheet-metal-unfold",
       "title": "Sheet-metal unfolding engine (cadgen.unfold)",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
         "Thickness detection from parallel planar face pairs",
         "Bend detection from coaxial cylindrical faces",

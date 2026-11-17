@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-core-skeleton
+sheet-metal-unfold
 
 ## Roadmap
 
@@ -26,7 +26,7 @@ Tests: `backend/tests/test_auth.py`, `backend/tests/test_cad_service.py`, `backe
 
 ### sheet-metal-unfold — Sheet-metal unfolding engine (cadgen.unfold)
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - Thickness detection from parallel planar face pairs
