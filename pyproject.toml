@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nexus-pilot-alan-vo"
-version = "1.4.0"
+version = "1.5.0"
 description = "Give your agent CAD superpowers — AI/ML developer toolkit for CAD geometry reasoning"
 readme = "README.md"
 license = {text = "MIT"}
