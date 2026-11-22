@@ -130,3 +130,29 @@ class TestStepLoaderEdgeCases:
         plan = loader.get_load_plan(result)
         assert plan["loadable"] == []
         assert plan["skipped"] == []
+    def test_thickness_from_parallel_planar_faces(self):
+        """Test thickness detection from parallel planar face pairs."""
+        from build123d import Box
+        from app.services.cad_service import CadService
+
+        service = CadService()
+        box = Box(10, 10, 5)
+        faces = list(box.faces())
+
+        # Top and bottom faces are parallel with opposite normals, thickness = 5
+        f4, f5 = faces[4], faces[5]
+        thickness = service._thickness_from_planar_pair(f4, f5)
+        assert thickness is not None
+        assert abs(thickness - 5.0) < 0.001
+
+        # Side faces are also parallel with opposite normals, thickness = 10
+        f0, f1 = faces[0], faces[1]
+        thickness = service._thickness_from_planar_pair(f0, f1)
+        assert thickness is not None
+        assert abs(thickness - 10.0) < 0.001
+
+        # Adjacent/perpendicular faces should return None
+        f0, f2 = faces[0], faces[2]
+        thickness = service._thickness_from_planar_pair(f0, f2)
+        assert thickness is None
+

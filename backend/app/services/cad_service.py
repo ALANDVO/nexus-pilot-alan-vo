@@ -123,6 +123,22 @@ class CadService:
         except Exception:
             return 0.0
 
+    def _thickness_from_planar_pair(self, f1, f2) -> Optional[float]:
+        """
+        Detect thickness from a pair of parallel planar faces.
+        Returns the distance between the faces if they are parallel with opposite normals,
+        or None if they are not suitable for thickness detection.
+        """
+        try:
+            if not self._are_parallel_opposite(f1, f2):
+                return None
+            thickness = self._face_distance(f1, f2)
+            if thickness > 0:
+                return thickness
+            return None
+        except Exception:
+            return None
+
     def _consensus_thickness(self, votes: list[float], tolerance: float = 0.01) -> Optional[float]:
         if not votes:
             return None
