@@ -2,7 +2,7 @@ import os
 import uuid
 from pathlib import Path
 from typing import Optional, BinaryIO
-from build123d import Compound, import_step, export_step
+from build123d import Compound, GeomType, import_step, export_step
 from build123d.topology import Shape
 
 
@@ -69,8 +69,8 @@ class CadService:
         Raises ValueError if not valid sheet metal.
         """
         faces = list(solid.faces())
-        planar_faces = [f for f in faces if f.geometry_type() == "PLANE"]
-        cylindrical_faces = [f for f in faces if f.geometry_type() == "CYLINDER"]
+        planar_faces = [f for f in faces if f.geom_type == GeomType.PLANE]
+        cylindrical_faces = [f for f in faces if f.geom_type == GeomType.CYLINDER]
 
         if len(planar_faces) < 2:
             raise ValueError("Not enough planar faces for sheet metal")
@@ -194,21 +194,21 @@ class CadService:
             return None
 
     def _coaxial(self, axis1, axis2, tolerance: float) -> bool:
-        # Same direction and position
+        # Same direction and position (coaxial cylinders)
         try:
             dir1 = axis1.direction
             dir2 = axis2.direction
             if abs(dir1.dot(dir2)) < 0.999:
-                return False
-            # Distance between axes
+                return False  # Not parallel
+            # Distance between axes: |(p2-p1) x dir1| / |dir1|
             p1 = axis1.position
             p2 = axis2.position
             v = p2 - p1
-            dist = (v - v.project(dir1)).length
+            cross = v.cross(dir1)
+            dist = cross.length / dir1.length
             return dist < tolerance
         except Exception:
             return False
-
     def _bend_angle(self, c1, c2) -> float:
         # Simplified - would need proper parametric range analysis
         return 90.0
